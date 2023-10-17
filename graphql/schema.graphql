@@ -1,0 +1,93 @@
+type User {
+    id: ID!
+    name: String!
+    email: String!
+}
+
+type Condition{
+    id: ID!
+    condition: String!
+}
+
+type Category{
+    id: ID!
+    category_name: String!
+}
+
+type Manufacturer{
+    id: ID!
+    manufacturer: String!
+}
+
+type BoatModel{
+    id: ID!
+    model: String!
+    manufacturer: Manufacturer! @belongsTo(relation: "manufacturer")
+}
+
+type Country{
+    id: ID!
+    country: String!
+}
+
+type City{
+    id: ID!
+    city: String!
+    country: Country! 
+}
+
+
+
+type Boat {
+    id: ID!
+    boat_name: String!
+    description: String!
+    model_year: Int!
+    price:Float!
+    length: Float!
+    width: Float!
+    merchant: User! @belongsTo(relation: "merchant")
+    condition: Condition! @belongsTo(relation: "condition")
+    category: Category! @belongsTo(relation: "category")
+    model: BoatModel! @belongsTo(relation: "model")
+    city: City! @belongsTo(relation: "city")
+}
+
+
+
+
+input BoatFilter {
+    category: ID
+    condition: ID
+    price_range: PriceRangeInput
+    country_name: String
+    length_range: LengthRangeInput
+    width_range: WidthRangeInput
+    model_year: modelYearRangeInput
+
+}
+
+input PriceRangeInput {
+    min: Float
+    max: Float
+}
+
+input LengthRangeInput {
+    min: Float
+    max: Float
+}
+
+input WidthRangeInput {
+    min: Float
+    max: Float
+}
+input modelYearRangeInput {
+    min: Float
+    max: Float
+}
+type Query {
+  top_boats: [Boat!]! @paginate
+  boat(id: ID! @eq): Boat @find
+  boats(filter: BoatFilter): [Boat!]!  @paginate
+}
+
